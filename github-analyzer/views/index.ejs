@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Profile Analyzer</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>GitHub Profile Analyzer</h1>
+  <form action="/analyze" method="get" class="analyze-form">
+    <input type="text" name="username" placeholder="GitHub username" required>
+    <button type="submit">Analyze</button>
+  </form>
+
+  <% if (data) { %>
+    <div class="profile-main">
+      <div class="profile-card">
+        <h2><%= data.user.name %> (@<%= data.user.login %>)</h2>
+        <img src="<%= data.user.avatar_url %>" width="100">
+        <p><%= data.user.bio %></p>
+        <p>
+          <strong>Location:</strong> <%= data.user.location || 'N/A' %><br>
+          <strong>Public Repos:</strong> <%= data.user.public_repos %><br>
+          <strong>Followers:</strong> <%= data.user.followers %> &nbsp;
+          <strong>Following:</strong> <%= data.user.following %><br>
+          <a href="<%= data.user.html_url %>" target="_blank">View GitHub Profile</a>
+        </p>
+      </div>
+      <div class="profile-chart">
+        <canvas id="langChart" width="300" height="300"></canvas>
+      </div>
+      <div class="profile-chart repo-list-container">
+        <!-- <h3>Repositories</h3> -->
+        <ul class="repo-list">
+          <% data.repos.forEach(function(repo) { %>
+            <li>
+              <strong>
+                <a href="<%= repo.html_url %>" target="_blank"><%= repo.name %></a>
+              </strong>
+              <% if (repo.description) { %>
+                <span><%= repo.description %></span>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+    <script>
+      const langData = <%- JSON.stringify(data.langCount) %>;
+    </script>
+    <script src="/js/chart.js"></script>
+  <% } %>
+</body>
+</html>
