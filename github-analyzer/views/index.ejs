@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>GitHub Profile Analyzer</title>
   <link rel="stylesheet" href="/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 </head>
 <body>
   <h1>GitHub Profile Analyzer</h1>
+
+  <!-- Input Form -->
   <form action="/analyze" method="get" class="analyze-form">
     <input type="text" name="username" placeholder="GitHub username" required>
     <button type="submit">Analyze</button>
@@ -14,9 +18,11 @@
 
   <% if (data) { %>
     <div class="profile-main">
+
+      <!-- Profile Card -->
       <div class="profile-card">
         <h2><%= data.user.name %> (@<%= data.user.login %>)</h2>
-        <img src="<%= data.user.avatar_url %>" width="100">
+        <img src="<%= data.user.avatar_url %>" alt="Avatar" width="100" height="100">
         <p><%= data.user.bio %></p>
         <p>
           <strong>Location:</strong> <%= data.user.location || 'N/A' %><br>
@@ -26,29 +32,35 @@
           <a href="<%= data.user.html_url %>" target="_blank">View GitHub Profile</a>
         </p>
       </div>
+
+      <!-- Language Pie Chart -->
       <div class="profile-chart">
         <canvas id="langChart" width="300" height="300"></canvas>
       </div>
+
+      <!-- Repository List -->
       <div class="profile-chart repo-list-container">
-        <!-- <h3>Repositories</h3> -->
+        <h3 class="repo-list-title">Repositories</h3>
         <ul class="repo-list">
-          <% data.repos.forEach(function(repo) { %>
+          <% data.repos.forEach(repo => { %>
             <li>
-              <strong>
-                <a href="<%= repo.html_url %>" target="_blank"><%= repo.name %></a>
-              </strong>
-              <% if (repo.description) { %>
-                <span><%= repo.description %></span>
-              <% } %>
+              <a href="<%= repo.html_url %>" target="_blank"><%= repo.name %></a>
+              <span><%= repo.description || "No description available." %></span>
             </li>
           <% }) %>
         </ul>
       </div>
     </div>
+
+    <!-- Pass data to chart.js -->
     <script>
       const langData = <%- JSON.stringify(data.langCount) %>;
     </script>
     <script src="/js/chart.js"></script>
+
+  <% } else if (typeof error !== 'undefined' && error) { %>
+    <!-- Error Message -->
+    <p style="text-align: center; color: red;"><%= error %></p>
   <% } %>
 </body>
 </html>

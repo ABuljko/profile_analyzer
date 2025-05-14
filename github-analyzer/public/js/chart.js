@@ -1,5 +1,8 @@
 if (typeof langData !== "undefined" && Object.keys(langData).length > 0) {
   const ctx = document.getElementById('langChart').getContext('2d');
+
+  const total = Object.values(langData).reduce((a, b) => a + b, 0);
+
   new Chart(ctx, {
     type: 'pie',
     data: {
@@ -12,10 +15,22 @@ if (typeof langData !== "undefined" && Object.keys(langData).length > 0) {
       }]
     },
     options: {
-      responsive: false,
+      responsive: true,
       plugins: {
-        legend: { position: 'bottom' }
+        legend: { position: 'bottom' },
+        datalabels: {
+          color: '#fff',
+          formatter: (value) => {
+            const percentage = (value / total) * 100;
+            return percentage.toFixed(1) + '%';
+          },
+          font: {
+            weight: 'bold',
+            size: 14
+          }
+        }
       }
-    }
+    },
+    plugins: [ChartDataLabels]
   });
 }
